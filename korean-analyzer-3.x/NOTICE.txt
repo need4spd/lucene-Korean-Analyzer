@@ -1,0 +1,19 @@
+Apache Commons logging is The Apache Software License, Version 2.0
+http://commons.apache.org/logging/
+
+Junit is Common Public License - v 1.0
+http://www.junit.org/
+
+Log4j is The Apache Software License, Version 2.0
+http://logging.apache.org/log4j/1.2/download.html
+
+Lucene is Apache License, Version 2.0
+http://lucene.apache.org/java/docs/index.html
+
+Twitter4j is Apache License 2.0
+http://twitter4j.org/en/index.html
+
+koreananalyzer is Apache License 2.0
+http://sourceforge.net/projects/lucenekorean/
+
+사전은 세종21 프로젝트에 문의 하여 사용의 허락을 득하였습니다.

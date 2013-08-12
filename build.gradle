@@ -1,0 +1,23 @@
+ext {
+    javaVersion = '1.6'
+    javaEncoding = 'UTF-8'
+    tmpDir = System.getProperty('java.io.tmpdir')
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    buildDir = 'target'
+
+    task hello << {
+        println "${project.name}"
+    }
+
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    [compileJava, compileTestJava]*.options*.encoding = javaEncoding
+
+    repositories {
+        mavenCentral()
+    }
+}
