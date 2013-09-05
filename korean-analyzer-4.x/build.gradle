@@ -22,7 +22,6 @@ dependencies {
 		[group: 'junit', name: 'junit', version: '4.4'],
 		[group: 'org.slf4j', name: 'slf4j-api', version: '1.6.6'],
 		[group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.6'],
-		[group: 'org.twitter4j', name: 'twitter4j-core', version: '2.1.4'],
 		[group: 'org.apache.lucene', name: 'lucene-core', version: "${versions.lucene}"],
         [group: 'org.apache.lucene', name: 'lucene-analyzers-common', version: "${versions.lucene}"],
         [group: 'org.apache.lucene', name: 'lucene-queries', version: "${versions.lucene}"],
@@ -36,7 +35,6 @@ dependencies {
         [group: 'junit', name: 'junit', version: '4.4'],
         [group: 'org.slf4j', name: 'slf4j-api', version: '1.6.6'],
         [group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.6'],
-        [group: 'org.twitter4j', name: 'twitter4j-core', version: '2.1.4'],
         [group: 'org.apache.lucene', name: 'lucene-core', version: "${versions.lucene}"],
 		[group: 'org.apache.lucene', name: 'lucene-analyzers-common', version: "${versions.lucene}"],
         [group: 'org.apache.lucene', name: 'lucene-queries', version: "${versions.lucene}"],
@@ -48,17 +46,15 @@ dependencies {
 
 }
 
-compileJava << {
-	copy {
-		from 'src/main/java'
-		into 'build/classes/main'
-		include '**/*.properties'
-		include '**/*.dic'
-		include '**/*.jflex'
-		include '**/*.txt'
+task copyDictionary(type: Copy) {
+	from 'src/main/java'
+	into 'target/classes/main'
+	include '**/*.properties'
+	include '**/*.dic'
+	include '**/*.jflex'
+	include '**/*.txt'
 
-		includeEmptyDirs = false
-	}
+	includeEmptyDirs = false
 }
 
 eclipse {
@@ -83,3 +79,5 @@ uploadArchives {
 		repository(url: "file:///Users/need4spd/Programming/need4spd-maven-repo/snapshots")
 	}
 }
+
+tasks.test.dependsOn copyDictionary

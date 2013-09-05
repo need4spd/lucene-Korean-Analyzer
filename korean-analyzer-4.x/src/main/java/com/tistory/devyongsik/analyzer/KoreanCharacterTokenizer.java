@@ -150,7 +150,9 @@ public class KoreanCharacterTokenizer extends Tokenizer {
 			
 			if (bufferIndex >= dataLen) {
 				offset += dataLen;
-				if(!charUtils.fill(ioBuffer, input)) { // read supplementary char aware with CharacterUtils
+				charUtils.fill(ioBuffer, input);
+				
+				if(ioBuffer.getLength() == 0) { // read supplementary char aware with CharacterUtils
 					dataLen = 0; // so next offset += dataLen won't decrement offset
 					if (length > 0) {
 						break;
