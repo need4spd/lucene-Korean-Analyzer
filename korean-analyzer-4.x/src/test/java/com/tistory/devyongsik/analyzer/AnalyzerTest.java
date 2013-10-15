@@ -2,6 +2,7 @@ package com.tistory.devyongsik.analyzer;
 
 import java.io.StringReader;
 import java.util.HashSet;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -76,6 +77,35 @@ public class AnalyzerTest extends AnalyzerTestUtil {
 			System.out.println("offSetAtt : " + offSetAtt.endOffset());
 
 			Assert.assertTrue(nouns.contains(t));
+		}
+		
+		analyzer.close();
+	}
+	
+	@Test
+	public void testCase3() throws Exception {
+		StringReader reader = new StringReader("the big 입니다. dog");
+
+		nouns.add(getToken("고속도로", 0, 4));
+		nouns.add(getToken("고속도", 0, 3));
+		nouns.add(getToken("고속", 0, 2));
+		nouns.add(getToken("속도", 1, 3));
+		nouns.add(getToken("고", 0, 1));
+		
+		Analyzer analyzer = new KoreanAnalyzer(true);
+		TokenStream stream = analyzer.tokenStream("dummy", reader);
+		stream.reset();
+		
+		CharTermAttribute charTermAtt = stream.getAttribute(CharTermAttribute.class);
+		OffsetAttribute offSetAtt = stream.getAttribute(OffsetAttribute.class);
+
+		while(stream.incrementToken()) {
+			TestToken t = getToken(charTermAtt.toString(), offSetAtt.startOffset(), offSetAtt.endOffset());
+			System.out.println("termAtt.term() : " + charTermAtt.toString());
+			System.out.println("offSetAtt : " + offSetAtt.startOffset());
+			System.out.println("offSetAtt : " + offSetAtt.endOffset());
+
+			//Assert.assertTrue(nouns.contains(t));
 		}
 		
 		analyzer.close();

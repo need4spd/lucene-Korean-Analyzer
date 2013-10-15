@@ -38,7 +38,7 @@ public class KoreanAnalyzer extends Analyzer {
 			nounExtractEngines.add(new KoreanSynonymEngine());
 			nounExtractEngines.add(new KoreanMorphEngine());
 			
-			Tokenizer tokenizer = new KoreanCharacterTokenizer(Version.LUCENE_42, reader);
+			Tokenizer tokenizer = new KoreanCharacterTokenizer(Version.LUCENE_44, reader);
 			TokenStream tok = new KoreanNounFilter(tokenizer, nounExtractEngines);
 			tok = new KoreanStopFilter(tok);
 	
@@ -51,7 +51,7 @@ public class KoreanAnalyzer extends Analyzer {
 			nounExtractEngines.add(new KoreanSynonymEngine());
 			nounExtractEngines.add(new KoreanMorphEngine());
 			
-			Tokenizer tokenizer = new KoreanCharacterTokenizer(Version.LUCENE_42, reader);
+			Tokenizer tokenizer = new KoreanCharacterTokenizer(Version.LUCENE_44, reader);
 			TokenStream tok = new KoreanNounFilter(tokenizer, nounExtractEngines);
 			tok = new KoreanStopFilter(tok);
 	
