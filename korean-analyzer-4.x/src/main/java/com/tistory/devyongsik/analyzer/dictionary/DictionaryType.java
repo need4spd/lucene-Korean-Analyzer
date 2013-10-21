@@ -1,13 +1,7 @@
 package com.tistory.devyongsik.analyzer.dictionary;
 
 public enum DictionaryType {
-	NOUN("명사") {
-		@Override
-		public String getPropertiesKey() {
-			return "noun.txt";
-		}
-	}
-	,COMPOUND("복합명사") {
+	COMPOUND("복합명사") {
 		@Override
 		public String getPropertiesKey() {
 			return "compounds.txt";
@@ -17,12 +11,6 @@ public enum DictionaryType {
 		@Override
 		public String getPropertiesKey() {
 			return "custom.txt";
-		}
-	}
-	,EOMI("어미-조사") {
-		@Override
-		public String getPropertiesKey() {
-			return "eomi_josa.txt";
 		}
 	}
 	,SYNONYM("동의어") {

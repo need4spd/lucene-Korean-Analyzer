@@ -19,7 +19,6 @@ public class KoreanLongestNounEngine implements Engine {
 
 	private Logger logger = LoggerFactory.getLogger(KoreanLongestNounEngine.class);
 	
-	private static Map<String, String> nounsDic = new HashMap<String, String>();
 	private static Map<String, String> customNounsDic = new HashMap<String, String>();
 	
 	
@@ -28,7 +27,6 @@ public class KoreanLongestNounEngine implements Engine {
 			logger.info("init KoreanLongestNounEngine");
 		}
 		
-		nounsDic = DictionaryFactory.getFactory().getBaseNounDictionary();
 		customNounsDic = DictionaryFactory.getFactory().getCustomNounDictionary();
 	}
 
@@ -52,7 +50,7 @@ public class KoreanLongestNounEngine implements Engine {
 		
 		String term = termAttr.toString();
 		//단어 자체에 대한 명사인지 평가
-		if(nounsDic.containsKey(term) || customNounsDic.containsKey(term)) {
+		if(customNounsDic.containsKey(term)) {
 			typeAttr.setType("long_noun");
 		}
 		
@@ -135,7 +133,7 @@ public class KoreanLongestNounEngine implements Engine {
 			comparedWord = term.substring(startIndex, endIndex);
 			
 			//매칭될 때 우선 matchedTerm에 저장
-			if(nounsDic.containsKey(comparedWord) || customNounsDic.containsKey(comparedWord)) {
+			if(customNounsDic.containsKey(comparedWord)) {
 				matchedTerm = comparedWord;
 				prevMatchedStartIndex = startIndex;
 				prevMatchedEndIndex = endIndex;

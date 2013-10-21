@@ -33,8 +33,8 @@ public class SynonymDictionaryIndex {
 	private SynonymDictionaryIndex() {
 		try {
 			
-			Analyzer analyzer = new SimpleAnalyzer(Version.LUCENE_42); //문서 내용을 분석 할 때 사용 될 Analyzer
-			IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_42, analyzer);
+			Analyzer analyzer = new SimpleAnalyzer(Version.LUCENE_44); //문서 내용을 분석 할 때 사용 될 Analyzer
+			IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_44, analyzer);
 			iwc.setOpenMode(OpenMode.CREATE);
 
 			indexWriter = new IndexWriter(ramDirectory, iwc);

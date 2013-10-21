@@ -20,7 +20,6 @@ public class KoreanBaseNounEngine implements Engine {
 	private Logger logger = LoggerFactory.getLogger(KoreanBaseNounEngine.class);
 	private boolean isUseForIndexing = true;
 	
-	private Map<String, String> nounsDic = new HashMap<String, String>();
 	private Map<String, String> customNounsDic = new HashMap<String, String>();
 	
 
@@ -37,7 +36,6 @@ public class KoreanBaseNounEngine implements Engine {
 			logger.info("init KoreanBaseNounEngine");
 		}
 		
-		nounsDic = DictionaryFactory.getFactory().getBaseNounDictionary();
 		customNounsDic = DictionaryFactory.getFactory().getCustomNounDictionary();
 	}
 
@@ -62,7 +60,7 @@ public class KoreanBaseNounEngine implements Engine {
 		
 		String term = termAttr.toString();
 		//단어 자체에 대한 명사인지 평가
-		if(nounsDic.containsKey(term) || customNounsDic.containsKey(term)) {
+		if(customNounsDic.containsKey(term)) {
 			typeAttr.setType("base_noun");
 		}
 		
@@ -91,7 +89,7 @@ public class KoreanBaseNounEngine implements Engine {
 			comparedWord = term.substring(startIndex, endIndex);
 			
 			//매칭될 때 State 저장
-			if((nounsDic.containsKey(comparedWord) || customNounsDic.containsKey(comparedWord)) && !term.equals(comparedWord)) {
+			if(customNounsDic.containsKey(comparedWord) && !term.equals(comparedWord)) {
 
 				//offset도 계산해주어야 합니다. 그래야 하이라이팅이 잘 됩니다.
 				int startOffSet = orgStartOffset + startIndex;

@@ -31,7 +31,6 @@ public class KoreanAnalyzer extends ReusableAnalyzerBase {
 		
 		if(isIndexingMode) {
 			List<Engine> nounExtractEngines = new ArrayList<Engine>();
-			nounExtractEngines.add(new KoreanStemmingEngine());
 			nounExtractEngines.add(new KoreanCompoundNounEngine());
 			nounExtractEngines.add(new KoreanBaseNounEngine());
 			nounExtractEngines.add(new KoreanLongestNounEngine());
@@ -45,7 +44,6 @@ public class KoreanAnalyzer extends ReusableAnalyzerBase {
 			return new TokenStreamComponents(tokenizer, tok);
 		} else {
 			List<Engine> nounExtractEngines = new ArrayList<Engine>();
-			nounExtractEngines.add(new KoreanStemmingEngine());
 			nounExtractEngines.add(new KoreanCompoundNounEngine());
 			nounExtractEngines.add(new KoreanLongestNounEngine());
 			nounExtractEngines.add(new KoreanSynonymEngine());
