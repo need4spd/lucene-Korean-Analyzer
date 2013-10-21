@@ -155,7 +155,7 @@ public class MorphAnalyzer {
 				}
 			}else if(o.getPos()==PatternConstants.POS_NOUN&&!hasCorrect&&!hasCorrectNoun&&compound==null) {
 				addResults(o,results,stems);
-			}else if(o.getPatn()==PatternConstants.PTN_NSM) {
+			}else if(!hasCorrectNoun&&o.getPatn()==PatternConstants.PTN_NSM) {
 				addResults(o,results,stems);
 			}
 		}			
@@ -317,8 +317,15 @@ public class MorphAnalyzer {
 	
 		try {		
 
-			WordEntry entry = DictionaryUtil.getVerb(o.getStem());	
-			if(entry!=null&&!("을".equals(end)&&entry.getFeature(WordEntry.IDX_REGURA)==IrregularUtil.IRR_TYPE_LIUL)) {							
+			WordEntry entry = DictionaryUtil.getVerb(o.getStem());				
+			if(entry!=null&&!(
+					("을".equals(end) || "은".equals(end) || "음".equals(end)) &&
+					   (entry.getFeature(WordEntry.IDX_REGURA)==IrregularUtil.IRR_TYPE_LIUL ||
+					    entry.getFeature(WordEntry.IDX_REGURA)==IrregularUtil.IRR_TYPE_BIUP)
+					   )
+				) 
+			{
+				System.out.println(entry.getWord());
 				AnalysisOutput output = o.clone();
 				output.setScore(AnalysisOutput.SCORE_CORRECT);
 				MorphUtil.buildPtnVM(output, candidates);
@@ -429,13 +436,13 @@ public class MorphAnalyzer {
 		   
 		   List<CompoundEntry> cnouns = o.getCNounList();
 		   
-		   if("화해".equals(cnouns.get(cnouns.size()-1).getWord())) {
+		   if("\uD654\uD574".equals(cnouns.get(cnouns.size()-1).getWord())) {
 			   if(!ConstraintUtil.canHaheCompound(cnouns.get(cnouns.size()-2).getWord())) return false;
 		   }else if(o.getPatn()==PatternConstants.PTN_NSM) {			   
-			   if("내".equals(o.getVsfx())&&cnouns.get(cnouns.size()-1).getWord().length()!=1) {
+			   if("\uB0B4".equals(o.getVsfx())&&cnouns.get(cnouns.size()-1).getWord().length()!=1) {
 				   WordEntry entry = DictionaryUtil.getWord(cnouns.get(cnouns.size()-1).getWord());
 				   if(entry!=null&&entry.getFeature(WordEntry.IDX_NE)=='0') return false;
-			   }else if("하".equals(o.getVsfx())&&cnouns.get(cnouns.size()-1).getWord().length()==1) { 
+			   }else if("\uD558".equals(o.getVsfx())&&cnouns.get(cnouns.size()-1).getWord().length()==1) { 
 				   // 짝사랑하다 와 같은 경우에 뒷글자가 1글자이면 제외
 				   return false;
 			   }			   
