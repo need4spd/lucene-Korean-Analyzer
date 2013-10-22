@@ -90,7 +90,7 @@ public class KoreanSynonymEngine implements Engine {
 	}
 
 	@Override
-	public void collectNounState(AttributeSource attributeSource, Stack<State> nounsStack, Map<String, String> returnedTokens) throws Exception {
+	public void collectNounState(AttributeSource attributeSource, List<ComparableState> comparableStateList, Map<String, String> returnedTokens) throws Exception {
 		CharTermAttribute charTermAttr = attributeSource.getAttribute(CharTermAttribute.class);
 		OffsetAttribute offSetAttr = attributeSource.getAttribute(OffsetAttribute.class);
 
@@ -132,7 +132,11 @@ public class KoreanSynonymEngine implements Engine {
 			//타입을 synonym으로 설정한다. 나중에 명사추출 시 동의어 타입은 건너뛰기 위함
 			typeAtt.setType("synonym"); 
 
-			nounsStack.push(attributeSource.captureState()); //추출된 동의어에 대한 AttributeSource를 Stack에 저장
+			ComparableState comparableState = new ComparableState();
+			comparableState.setState(attributeSource.captureState());
+			comparableState.setStartOffset(offSetAttr.startOffset());
+			
+			comparableStateList.add(comparableState);
 		}
 		return;
 	}

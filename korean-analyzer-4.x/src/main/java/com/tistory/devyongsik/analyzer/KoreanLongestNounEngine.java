@@ -1,15 +1,14 @@
 package com.tistory.devyongsik.analyzer;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
 import org.apache.lucene.util.AttributeSource;
-import org.apache.lucene.util.AttributeSource.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +30,7 @@ public class KoreanLongestNounEngine implements Engine {
 	}
 
 	@Override
-	public void collectNounState(AttributeSource attributeSource, Stack<State> nounsStack, Map<String, String> returnedTokens) throws Exception {
+	public void collectNounState(AttributeSource attributeSource, List<ComparableState> comparableStateList, Map<String, String> returnedTokens) throws Exception {
 		
 		
 		CharTermAttribute termAttr = attributeSource.getAttribute(CharTermAttribute.class);
@@ -106,7 +105,11 @@ public class KoreanLongestNounEngine implements Engine {
 					
 					offSetAttr.setOffset(startOffSet , endOffSet);
 					
-					nounsStack.push(attributeSource.captureState()); //추출된 명사에 대한 AttributeSource를 Stack에 저장
+					ComparableState comparableState = new ComparableState();
+					comparableState.setState(attributeSource.captureState());
+					comparableState.setStartOffset(offSetAttr.startOffset());
+					
+					comparableStateList.add(comparableState);
 					
 					matchedTerm = "";
 					

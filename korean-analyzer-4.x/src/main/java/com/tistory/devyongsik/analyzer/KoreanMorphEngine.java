@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
 import org.apache.lucene.analysis.kr.morph.AnalysisOutput;
 import org.apache.lucene.analysis.kr.morph.CompoundEntry;
@@ -40,7 +39,7 @@ public class KoreanMorphEngine implements Engine {
 
 	
 	@Override
-	public void collectNounState(AttributeSource attributeSource, Stack<State> nounsStack, Map<String, String> returnedTokens)
+	public void collectNounState(AttributeSource attributeSource, List<ComparableState> comparableStateList, Map<String, String> returnedTokens)
 			throws Exception {
 		
 		CharTermAttribute termAttr = attributeSource.getAttribute(CharTermAttribute.class);
@@ -58,7 +57,7 @@ public class KoreanMorphEngine implements Engine {
 		returnedTokens.put(term+"_"+offSetAttr.startOffset()+"_"+offSetAttr.endOffset(), "");
 		
 		try {
-	    	analysisKorean(attributeSource, nounsStack, returnedTokens);	
+	    	analysisKorean(attributeSource, comparableStateList, returnedTokens);	
 	 
 	    } catch (MorphException e) {
 	    	logger.error(e.getMessage());
@@ -66,7 +65,7 @@ public class KoreanMorphEngine implements Engine {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void analysisKorean(AttributeSource attrSource, Stack<State> nounStateStack, Map<String, String> returnedTokens) throws MorphException {
+	private void analysisKorean(AttributeSource attrSource, List<ComparableState> comparableStateList, Map<String, String> returnedTokens) throws MorphException {
 		
 		if(logger.isDebugEnabled())
 			logger.debug("analysisKorean");
@@ -143,7 +142,12 @@ public class KoreanMorphEngine implements Engine {
 						logger.debug("["+makeKeyForCheck+"] 는 이미 추출된 Token입니다. Skip");
 					}
 				} else {
-					nounStateStack.add(attrSource.captureState());
+					
+					ComparableState comparableState = new ComparableState();
+					comparableState.setState(attrSource.captureState());
+					comparableState.setStartOffset(offsetAttrResult.startOffset());
+					
+					comparableStateList.add(comparableState);
 					
 					if(logger.isDebugEnabled())
 						logger.debug("추출 된 명사 : [" + termAttrResult.toString() + "]");

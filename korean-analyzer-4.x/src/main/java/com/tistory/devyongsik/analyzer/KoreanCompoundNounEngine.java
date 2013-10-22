@@ -3,14 +3,12 @@ package com.tistory.devyongsik.analyzer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
 import org.apache.lucene.util.AttributeSource;
-import org.apache.lucene.util.AttributeSource.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +28,7 @@ public class KoreanCompoundNounEngine implements Engine {
 	}
 	
 	@Override
-	public void collectNounState(AttributeSource attributeSource, Stack<State> nounsStack, Map<String, String> returnedTokens) throws Exception {
+	public void collectNounState(AttributeSource attributeSource, List<ComparableState> comparableStateList, Map<String, String> returnedTokens) throws Exception {
 		
 		
 		CharTermAttribute termAttr = attributeSource.getAttribute(CharTermAttribute.class);
@@ -76,7 +74,12 @@ public class KoreanCompoundNounEngine implements Engine {
 			    offSetAttr.setOffset(startOffSet , endOffSet);
 			    
 			    typeAttr.setType("compound");
-			    nounsStack.add(attributeSource.captureState());
+			    
+			    ComparableState comparableState = new ComparableState();
+				comparableState.setState(attributeSource.captureState());
+				comparableState.setStartOffset(offSetAttr.startOffset());
+				
+				comparableStateList.add(comparableState);
 			}
 		}
 		
