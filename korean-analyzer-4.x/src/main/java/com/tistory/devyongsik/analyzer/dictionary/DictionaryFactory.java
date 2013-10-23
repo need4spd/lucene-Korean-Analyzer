@@ -14,17 +14,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.tistory.devyongsik.analyzer.DictionaryProperties;
-import com.tistory.devyongsik.analyzer.dictionaryindex.SynonymDictionaryIndex;
 
 public class DictionaryFactory {
 	private Logger logger = LoggerFactory.getLogger(DictionaryFactory.class);
 
 	private static DictionaryFactory factory = new DictionaryFactory();
 	
-	private Map<DictionaryType, List<String>> dictionaryMap = new HashMap<DictionaryType, List<String>>();
 	private Map<String, List<String>> compoundDictionaryMap = new HashMap<String, List<String>>();
 	private Map<String, String> customNounDictionaryMap = new HashMap<String, String>();
 	private Map<String, String> stopWordDictionaryMap = new HashMap<String, String>();
+	private List<String> synonymList = new ArrayList<String>();
 	
 	public static DictionaryFactory getFactory() {
 		return factory;
@@ -39,12 +38,8 @@ public class DictionaryFactory {
 		dictionaryLoader.loadDictionaries();
 	}
 	
-	public void setDictionaryMap(Map<DictionaryType, List<String>> dictionaryMap) {
-		this.dictionaryMap = dictionaryMap;
-	}
-	
-	public List<String> get(DictionaryType name) {
-		return dictionaryMap.get(name);
+	public List<String> getSynonymList() {
+		return synonymList;
 	}
 	
 	public Map<String, List<String>> getCompoundDictionaryMap() {
@@ -72,43 +67,11 @@ public class DictionaryFactory {
 	public void setStopWordDictionaryMap(Map<String, String> stopWordDictionaryMap) {
 		this.stopWordDictionaryMap = stopWordDictionaryMap;
 	}
-
-	public void rebuildDictionary(DictionaryType dictionaryType) {
-		
-		if(DictionaryType.CUSTOM == dictionaryType) {
-			List<String> customNouns = dictionaryMap.get(DictionaryType.CUSTOM);
-			customNounDictionaryMap.clear();
-			for(String noun : customNouns) {
-				customNounDictionaryMap.put(noun, null);
-			}
-			
-			return;
-		}
-		
-		if(DictionaryType.COMPOUND == dictionaryType) {
-			List<String> customNouns = dictionaryMap.get(DictionaryType.CUSTOM);
-			customNounDictionaryMap.clear();
-			for(String noun : customNouns) {
-				customNounDictionaryMap.put(noun, null);
-			}
-		}
-		
-		if(DictionaryType.STOP == dictionaryType) {
-			List<String> stopWords = dictionaryMap.get(DictionaryType.STOP);
-			stopWordDictionaryMap.clear();
-			for(String stopWord : stopWords) {
-				stopWordDictionaryMap.put(stopWord, null);
-			}
-		}
-		
-		if(DictionaryType.SYNONYM == dictionaryType) {
-			List<String> synonymWords = dictionaryMap.get(DictionaryType.SYNONYM);
-			SynonymDictionaryIndex indexModule = SynonymDictionaryIndex.getIndexingModule();
-			indexModule.indexingDictionary(synonymWords);
-		}
-	}
 	
 	class DictionaryLoader {
+		
+		private Map<DictionaryType, List<String>> dictionaryMap = new HashMap<DictionaryType, List<String>>();
+		
 		public void loadDictionaries() {
 			DictionaryType[] dictionaryTypes = DictionaryType.values();
 			
@@ -139,6 +102,8 @@ public class DictionaryFactory {
 				customNounDictionaryMap.put(noun, null);
 			}
 			
+			synonymList = dictionaryMap.get(DictionaryType.SYNONYM);
+						
 			List<String> stopWords = dictionaryMap.get(DictionaryType.STOP);
 			for(String stopWord : stopWords) {
 				stopWordDictionaryMap.put(stopWord, null);

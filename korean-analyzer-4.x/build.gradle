@@ -28,7 +28,8 @@ dependencies {
         [group: 'org.apache.lucene', name: 'lucene-queryparser', version: "${versions.lucene}"],
         [group: 'ch.qos.logback', name: 'logback-core', version: '1.0.13'],
 		[group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.13'],
-		[group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.1.6']
+		[group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.1.6'],
+		[group: 'com.google.guava', name: 'guava', version: 'r09']
 	)
 
 	testRuntime(
@@ -41,7 +42,8 @@ dependencies {
         [group: 'org.apache.lucene', name: 'lucene-queryparser', version: "${versions.lucene}"],
         [group: 'ch.qos.logback', name: 'logback-core', version: '1.0.13'],
 		[group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.13'],
-		[group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.1.6']
+		[group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.1.6'],
+		[group: 'com.google.guava', name: 'guava', version: 'r09']
     )
 
 }

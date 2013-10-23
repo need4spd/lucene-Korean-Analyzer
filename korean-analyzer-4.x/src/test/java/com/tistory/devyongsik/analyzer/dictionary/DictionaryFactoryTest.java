@@ -10,12 +10,9 @@ public class DictionaryFactoryTest {
 	
 	@Test
 	public void loadDictionary() {
-		DictionaryType[] dics = DictionaryType.values();
-		for(DictionaryType dic : dics) {
-			DictionaryFactory factory = DictionaryFactory.getFactory();
-			List<String> readWords = factory.get(dic);
-			
-			Assert.assertTrue(readWords.size() > 0);
-		}
+		DictionaryFactory factory = DictionaryFactory.getFactory();
+		List<String> readWords = factory.getSynonymList();
+		
+		Assert.assertTrue(readWords.size() > 0);
 	}
 }

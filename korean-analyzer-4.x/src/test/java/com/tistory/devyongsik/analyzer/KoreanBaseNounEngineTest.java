@@ -17,7 +17,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.tistory.devyongsik.analyzer.dictionary.DictionaryFactory;
-import com.tistory.devyongsik.analyzer.dictionary.DictionaryType;
 import com.tistory.devyongsik.analyzer.util.AnalyzerTestUtil;
 import com.tistory.devyongsik.analyzer.util.TestToken;
 
@@ -30,7 +29,7 @@ public class KoreanBaseNounEngineTest extends AnalyzerTestUtil {
 	public void initDictionary() {
 		nouns = new HashSet<TestToken>();
 		dictionaryFactory = DictionaryFactory.getFactory();
-		engines.add(new KoreanBaseNounEngine());
+		engines = new ArrayList<Engine>();
 	}
 
 	@Test
@@ -42,26 +41,18 @@ public class KoreanBaseNounEngineTest extends AnalyzerTestUtil {
 		customNounDictionaryMap.put("동료", null);
 		customNounDictionaryMap.put("동산", null);
 		
-		dictionaryFactory.setDictionaryMap();;
+		dictionaryFactory.setCustomNounDictionaryMap(customNounDictionaryMap);
+		
+		engines.add(new KoreanBaseNounEngine());
 		
 		StringReader reader = new StringReader("사랑하고회사동료동산");
 		
-		nouns.add(getToken("산", 9, 10));
 		nouns.add(getToken("동산", 8, 10));
-		nouns.add(getToken("동", 8, 9));
 		nouns.add(getToken("동료", 6, 8));
-		nouns.add(getToken("동", 6, 7));
-		nouns.add(getToken("사", 5, 6));
 		nouns.add(getToken("회사", 4, 6));
-		nouns.add(getToken("회", 4, 5));
-		nouns.add(getToken("하고", 2, 4));
-		nouns.add(getToken("하", 2, 3));
 		nouns.add(getToken("사랑", 0, 2));
-		nouns.add(getToken("사", 0, 1));
 		nouns.add(getToken("사랑하고회사동료동산", 0, 10));
-		
-		
-		
+				
 		TokenStream stream = new KoreanNounFilter(new KoreanCharacterTokenizer(reader), engines);
 		stream.reset();
 		
@@ -82,17 +73,25 @@ public class KoreanBaseNounEngineTest extends AnalyzerTestUtil {
 	
 	@Test
 	public void testCase2() throws Exception {
+		Map<String, String> customNounDictionaryMap = new HashMap<String, String>();
+		customNounDictionaryMap.put("서울", null);
+		customNounDictionaryMap.put("지방", null);
+		customNounDictionaryMap.put("경찰", null);
+		customNounDictionaryMap.put("경찰청", null);
+		customNounDictionaryMap.put("경", null);
+		customNounDictionaryMap.put("방", null);
+		
+		dictionaryFactory.setCustomNounDictionaryMap(customNounDictionaryMap);
+		
+		engines.add(new KoreanBaseNounEngine());
+		
 		StringReader reader = new StringReader("서울지방경찰청");
 		
-		nouns.add(getToken("청", 6, 7));
-		nouns.add(getToken("찰", 5, 6));
 		nouns.add(getToken("경찰청", 4, 7));
 		nouns.add(getToken("경찰", 4, 6));
 		nouns.add(getToken("경", 4, 5));
 		nouns.add(getToken("지방", 2, 4));
-		nouns.add(getToken("지", 2, 3));
 		nouns.add(getToken("서울", 0, 2));
-		nouns.add(getToken("서", 0, 1));
 		nouns.add(getToken("서울지방경찰청", 0, 7));
 		
 		TokenStream stream = new KoreanNounFilter(new KoreanCharacterTokenizer(reader), engines);
@@ -115,18 +114,18 @@ public class KoreanBaseNounEngineTest extends AnalyzerTestUtil {
 	
 	@Test
 	public void testCase3() throws Exception {
+		Map<String, String> customNounDictionaryMap = new HashMap<String, String>();
+		customNounDictionaryMap.put("삼성전자", null);
+		customNounDictionaryMap.put("연수원", null);
+		
+		dictionaryFactory.setCustomNounDictionaryMap(customNounDictionaryMap);
+		
+		engines.add(new KoreanBaseNounEngine());
+		
 		StringReader reader = new StringReader("삼성전자연수원");
 		
-		nouns.add(getToken("원", 6, 7));
-		nouns.add(getToken("수원", 5, 7));
-		nouns.add(getToken("수", 5, 6));
 		nouns.add(getToken("연수원", 4, 7));
-		nouns.add(getToken("연수", 4, 6));
-		nouns.add(getToken("연", 4, 5));
-		nouns.add(getToken("전자", 2, 4));
-		nouns.add(getToken("전", 2, 3));
-		nouns.add(getToken("삼성", 0, 2));
-		nouns.add(getToken("삼", 0, 1));
+		nouns.add(getToken("삼성전자", 0, 4));
 		nouns.add(getToken("삼성전자연수원", 0, 7));
 		
 		TokenStream stream = new KoreanNounFilter(new KoreanCharacterTokenizer(reader), engines);
@@ -149,16 +148,20 @@ public class KoreanBaseNounEngineTest extends AnalyzerTestUtil {
 	
 	@Test
 	public void testCase4() throws Exception {
+		Map<String, String> customNounDictionaryMap = new HashMap<String, String>();
+		customNounDictionaryMap.put("검", null);
+		customNounDictionaryMap.put("검색", null);
+		customNounDictionaryMap.put("엔진", null);
+		customNounDictionaryMap.put("개발자", null);
+		
+		dictionaryFactory.setCustomNounDictionaryMap(customNounDictionaryMap);
+		
+		engines.add(new KoreanBaseNounEngine());
+		
 		StringReader reader = new StringReader("검색엔진개발자");
 		
-		nouns.add(getToken("자", 6, 7));
-		nouns.add(getToken("발자", 5, 7));
-		nouns.add(getToken("발", 5, 6));
 		nouns.add(getToken("개발자", 4, 7));
-		nouns.add(getToken("개발", 4, 6));
-		nouns.add(getToken("개", 4, 5));
 		nouns.add(getToken("엔진", 2, 4));
-		nouns.add(getToken("엔", 2, 3));
 		nouns.add(getToken("검색", 0, 2));
 		nouns.add(getToken("검", 0, 1));
 		nouns.add(getToken("검색엔진개발자", 0, 7));
@@ -183,35 +186,25 @@ public class KoreanBaseNounEngineTest extends AnalyzerTestUtil {
 	
 	@Test
 	public void testCase5() throws Exception {
+		Map<String, String> customNounDictionaryMap = new HashMap<String, String>();
+		customNounDictionaryMap.put("색인", null);
+		customNounDictionaryMap.put("방법", null);
+		customNounDictionaryMap.put("실시", null);;
+		
+		dictionaryFactory.setCustomNounDictionaryMap(customNounDictionaryMap);
+		
+		engines.add(new KoreanBaseNounEngine());
+		
 		StringReader reader = new StringReader("여러가지 방법을 사용해서 색인을 실시합니다.");
 		
-		nouns.add(getToken("합", 20, 21));
-		nouns.add(getToken("니", 21, 22));
-		nouns.add(getToken("실", 18, 19));
 		nouns.add(getToken("실시", 18, 20));
-		nouns.add(getToken("니", 21, 22));
-		nouns.add(getToken("니다", 21, 23));
-		nouns.add(getToken("다", 22, 23));
 		nouns.add(getToken("실시합니다", 18, 23));
-		nouns.add(getToken("색", 14, 15));
 		nouns.add(getToken("색인", 14, 16));
-		nouns.add(getToken("을", 16, 17));
 		nouns.add(getToken("색인을", 14, 17));
-		nouns.add(getToken("사", 9, 10));
 		nouns.add(getToken("사용", 9, 11));
-		nouns.add(getToken("해", 11, 12));
-		nouns.add(getToken("해서", 11, 13));
-		nouns.add(getToken("서", 12, 13));
 		nouns.add(getToken("사용해서", 9, 13));
-		nouns.add(getToken("방", 5, 6));
 		nouns.add(getToken("방법", 5, 7));
-		nouns.add(getToken("을", 7, 8));
 		nouns.add(getToken("방법을", 5, 8));
-		nouns.add(getToken("여", 0, 1));
-		nouns.add(getToken("여러", 0, 2));
-		nouns.add(getToken("가", 2, 3));
-		nouns.add(getToken("가지", 2, 4));
-		nouns.add(getToken("지", 3, 4));
 		nouns.add(getToken("여러가지", 0, 4));
 		
 		TokenStream stream = new KoreanNounFilter(new KoreanCharacterTokenizer(reader), engines);
@@ -234,17 +227,19 @@ public class KoreanBaseNounEngineTest extends AnalyzerTestUtil {
 	
 	@Test
 	public void testCase6() throws Exception {
+		Map<String, String> customNounDictionaryMap = new HashMap<String, String>();
+		customNounDictionaryMap.put("상품", null);
+		customNounDictionaryMap.put("판매", null);
+		customNounDictionaryMap.put("출장소", null);;
+		
+		dictionaryFactory.setCustomNounDictionaryMap(customNounDictionaryMap);
+		
+		engines.add(new KoreanBaseNounEngine());
+		
 		StringReader reader = new StringReader("상품판매읔출장소");
 		
-		nouns.add(getToken("소", 7, 8));
-		nouns.add(getToken("장소", 6, 8));
-		nouns.add(getToken("장", 6, 7));
 		nouns.add(getToken("출장소", 5, 8));
-		nouns.add(getToken("출장", 5, 7));
-		nouns.add(getToken("출", 5, 6));
 		nouns.add(getToken("판매", 2, 4));
-		nouns.add(getToken("판", 2, 3));
-		nouns.add(getToken("상", 0, 1));
 		nouns.add(getToken("상품", 0, 2));
 		nouns.add(getToken("상품판매읔출장소", 0, 8));
 		
@@ -268,18 +263,20 @@ public class KoreanBaseNounEngineTest extends AnalyzerTestUtil {
 	
 	@Test
 	public void testCase7() throws Exception {
+		Map<String, String> customNounDictionaryMap = new HashMap<String, String>();
+		customNounDictionaryMap.put("검색", null);
+		customNounDictionaryMap.put("엔진", null);
+		customNounDictionaryMap.put("개발자", null);;
+		
+		dictionaryFactory.setCustomNounDictionaryMap(customNounDictionaryMap);
+		
+		engines.add(new KoreanBaseNounEngine());
+		
 		StringReader reader = new StringReader("검색엔진개발자읔");
 		
-		nouns.add(getToken("자", 6, 7));
-		nouns.add(getToken("발자", 5, 7));
-		nouns.add(getToken("발", 5, 6));
 		nouns.add(getToken("개발자", 4, 7));
-		nouns.add(getToken("개발", 4, 6));
-		nouns.add(getToken("개", 4, 5));
 		nouns.add(getToken("엔진", 2, 4));
-		nouns.add(getToken("엔", 2, 3));
 		nouns.add(getToken("검색", 0, 2));
-		nouns.add(getToken("검", 0, 1));
 		nouns.add(getToken("검색엔진개발자읔", 0, 8));
 		
 		TokenStream stream = new KoreanNounFilter(new KoreanCharacterTokenizer(reader), engines);
@@ -304,6 +301,14 @@ public class KoreanBaseNounEngineTest extends AnalyzerTestUtil {
 	
 	@Test
 	public void testCase8() throws Exception {
+		Map<String, String> customNounDictionaryMap = new HashMap<String, String>();
+		customNounDictionaryMap.put("랑콤", null);
+		customNounDictionaryMap.put("엔진", null);
+		
+		dictionaryFactory.setCustomNounDictionaryMap(customNounDictionaryMap);
+		
+		engines.add(new KoreanBaseNounEngine());
+		
 		StringReader reader = new StringReader("랑콤");
 		
 		nouns.add(getToken("랑콤", 0, 2));
