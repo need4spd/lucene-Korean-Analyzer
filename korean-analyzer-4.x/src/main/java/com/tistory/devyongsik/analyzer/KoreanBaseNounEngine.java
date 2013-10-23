@@ -25,7 +25,7 @@ public class KoreanBaseNounEngine implements Engine {
 			logger.info("init KoreanBaseNounEngine");
 		}
 		
-		customNounsDic = DictionaryFactory.getFactory().getCustomNounDictionary();
+		customNounsDic = DictionaryFactory.getFactory().getCustomNounDictionaryMap();
 	}
 
 	@Override
@@ -124,8 +124,7 @@ public class KoreanBaseNounEngine implements Engine {
 					startIndex = endIndex - 1;
 					endIndex = startIndex + 1;
 				} else {
-					startIndex = endIndex;
-					endIndex = startIndex + 1;
+					endIndex++;
 				}
 				
 				isPrevMatch = false;

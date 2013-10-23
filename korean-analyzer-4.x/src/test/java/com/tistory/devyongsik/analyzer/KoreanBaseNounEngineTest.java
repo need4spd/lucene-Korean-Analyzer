@@ -2,8 +2,10 @@ package com.tistory.devyongsik.analyzer;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.lucene.analysis.TokenStream;
@@ -14,21 +16,34 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.tistory.devyongsik.analyzer.dictionary.DictionaryFactory;
+import com.tistory.devyongsik.analyzer.dictionary.DictionaryType;
 import com.tistory.devyongsik.analyzer.util.AnalyzerTestUtil;
 import com.tistory.devyongsik.analyzer.util.TestToken;
 
 public class KoreanBaseNounEngineTest extends AnalyzerTestUtil {
 	private Set<TestToken> nouns = null;	
 	private List<Engine> engines = new ArrayList<Engine>();
+	private DictionaryFactory dictionaryFactory;
 	
 	@Before
 	public void initDictionary() {
 		nouns = new HashSet<TestToken>();
+		dictionaryFactory = DictionaryFactory.getFactory();
 		engines.add(new KoreanBaseNounEngine());
 	}
 
 	@Test
 	public void testCase1() throws Exception {
+		
+		Map<String, String> customNounDictionaryMap = new HashMap<String, String>();
+		customNounDictionaryMap.put("사랑", null);
+		customNounDictionaryMap.put("회사", null);
+		customNounDictionaryMap.put("동료", null);
+		customNounDictionaryMap.put("동산", null);
+		
+		dictionaryFactory.setDictionaryMap();;
+		
 		StringReader reader = new StringReader("사랑하고회사동료동산");
 		
 		nouns.add(getToken("산", 9, 10));

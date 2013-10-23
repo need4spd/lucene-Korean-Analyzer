@@ -31,7 +31,7 @@ public class KoreanStopFilter extends TokenFilter {
 		posIncrAtt = getAttribute(PositionIncrementAttribute.class);
 		
 		DictionaryFactory dictionaryFactory = DictionaryFactory.getFactory();	
-		stopWordsMap = dictionaryFactory.getStopWordsDictionary();
+		stopWordsMap = dictionaryFactory.getStopWordsDictionaryMap();
 	}
 
 	public void setEnablePositionIncrements(boolean enable) {
