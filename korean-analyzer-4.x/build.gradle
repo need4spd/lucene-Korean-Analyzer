@@ -79,6 +79,7 @@ eclipse {
 uploadArchives {
 	repositories.mavenDeployer {
 		repository(url: "file:///Users/need4spd/Programming/need4spd-maven-repo/snapshots")
+		//repository(url: "file:///Programming/Java/need4spd-maven-repo/snapshots")
 	}
 }
 
