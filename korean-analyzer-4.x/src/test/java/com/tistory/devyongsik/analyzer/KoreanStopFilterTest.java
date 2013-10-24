@@ -2,50 +2,55 @@ package com.tistory.devyongsik.analyzer;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.tistory.devyongsik.analyzer.dictionary.DictionaryFactory;
 import com.tistory.devyongsik.analyzer.util.AnalyzerTestUtil;
 import com.tistory.devyongsik.analyzer.util.TestToken;
 
 public class KoreanStopFilterTest extends AnalyzerTestUtil {
-	private static Set<TestToken> tokens = new HashSet<TestToken>();
+	private List<TestToken> tokens = null;
 	//불용어는 the와 .
-	StringReader reader = new StringReader("the 개발하고 꼭 이것을 잘 해야합니다. 공백입니다.");
-
+	private StringReader reader = new StringReader("the 개발하고 꼭 이것을 잘 해야합니다. 공백입니다.");
+	private DictionaryFactory dictionaryFactory = null;
+	
 	@Before
 	public void setUp() {
+		tokens = Lists.newArrayList();
+		dictionaryFactory = DictionaryFactory.getFactory();
+		
 		tokens.add(getToken("공백입니다", 24, 29));
 		tokens.add(getToken("해야합니다", 17, 22));
 		tokens.add(getToken("이것을", 11, 14));
 		tokens.add(getToken("개발하고", 4, 8));
+		tokens.add(getToken("꼭", 9, 10));
+		tokens.add(getToken("잘", 15, 16));
 	}
 	
 	
 	@Test
 	public void stopFilter() throws IOException {
+		
+		Map<String, String> stopWordDictionaryMap = Maps.newHashMap();
+		stopWordDictionaryMap.put("the", null);
+		stopWordDictionaryMap.put(".", null);
+		
+		dictionaryFactory.setStopWordDictionaryMap(stopWordDictionaryMap);
+
 		TokenStream stream = new KoreanStopFilter(new KoreanCharacterTokenizer(reader));
 		stream.reset();
 		
-		CharTermAttribute charTermAtt = stream.getAttribute(CharTermAttribute.class);
-		OffsetAttribute offSetAtt = stream.getAttribute(OffsetAttribute.class);
-		
-		while(stream.incrementToken()) {
-			TestToken t = getToken(charTermAtt.toString(), offSetAtt.startOffset(), offSetAtt.endOffset());
-			System.out.println("termAtt.term() : " + charTermAtt.toString());
-			System.out.println("offSetAtt : " + offSetAtt.startOffset());
-			System.out.println("offSetAtt : " + offSetAtt.endOffset());
+		List<TestToken> extractedTokens = collectExtractedNouns(stream);
 
-			Assert.assertTrue(tokens.contains(t));
-		}
-		
 		stream.close();
+
+		verify(tokens, extractedTokens);
 	}
 }
