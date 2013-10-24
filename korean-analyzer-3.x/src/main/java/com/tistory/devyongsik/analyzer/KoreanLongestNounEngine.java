@@ -27,7 +27,7 @@ public class KoreanLongestNounEngine implements Engine {
 			logger.info("init KoreanLongestNounEngine");
 		}
 		
-		customNounsDic = DictionaryFactory.getFactory().getCustomNounDictionary();
+		customNounsDic = DictionaryFactory.getFactory().getCustomNounDictionaryMap();
 	}
 
 	@Override

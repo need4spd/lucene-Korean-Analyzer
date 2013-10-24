@@ -26,7 +26,7 @@ public class KoreanCompoundNounEngine implements Engine {
 			logger.info("init KoreanCompoundNounEngine");
 		}
 		
-		compoundNouns = DictionaryFactory.getFactory().getCompoundDictionary();
+		compoundNouns = DictionaryFactory.getFactory().getCompoundDictionaryMap();
 	}
 	
 	@Override

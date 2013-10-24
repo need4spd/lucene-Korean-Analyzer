@@ -14,18 +14,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.tistory.devyongsik.analyzer.DictionaryProperties;
-import com.tistory.devyongsik.analyzer.dictionaryindex.SynonymDictionaryIndex;
 
 public class DictionaryFactory {
 	private Logger logger = LoggerFactory.getLogger(DictionaryFactory.class);
 
 	private static DictionaryFactory factory = new DictionaryFactory();
-	private Map<DictionaryType, List<String>> dictionaryMap = new HashMap<DictionaryType, List<String>>();
+	
 	private Map<String, List<String>> compoundDictionaryMap = new HashMap<String, List<String>>();
 	private Map<String, String> customNounDictionaryMap = new HashMap<String, String>();
-	private Map<String, String> stopDictionaryMap = new HashMap<String, String>();
+	private Map<String, String> stopWordDictionaryMap = new HashMap<String, String>();
+	private List<String> synonymList = new ArrayList<String>();
 	
-		
 	public static DictionaryFactory getFactory() {
 		return factory;
 	}
@@ -35,134 +34,130 @@ public class DictionaryFactory {
 	}
 	
 	private void initDictionary() {
-		DictionaryType[] dictionaryTypes = DictionaryType.values();
-		for(DictionaryType dictionaryType : dictionaryTypes) {
-			if(logger.isInfoEnabled()) {
-				logger.info("["+dictionaryType.getDescription()+"] "+"create wordset from file");
-			}
-			
-			List<String> dictionary = loadDictionary(dictionaryType);
-			dictionaryMap.put(dictionaryType, dictionary);
-		}
-		
-		List<String> dictionaryData = dictionaryMap.get(DictionaryType.COMPOUND);
-		String[] extractKey = null;
-		String key = null;
-		String[] nouns = null;
-		
-		for(String data : dictionaryData) {
-			extractKey = data.split(":");
-			key = extractKey[0];
-			nouns = extractKey[1].split(",");
-			
-			compoundDictionaryMap.put(key, Arrays.asList(nouns));
-		}
-		
-		List<String> customNouns = dictionaryMap.get(DictionaryType.CUSTOM);
-		for(String noun : customNouns) {
-			customNounDictionaryMap.put(noun, null);
-		}
-		
-		List<String> stopWords = dictionaryMap.get(DictionaryType.STOP);
-		for(String stopWord : stopWords) {
-			stopDictionaryMap.put(stopWord, null);
-		}
+		DictionaryLoader dictionaryLoader = new DictionaryLoader();
+		dictionaryLoader.loadDictionaries();
 	}
 	
-	public List<String> get(DictionaryType name) {
-		return dictionaryMap.get(name);
+	public List<String> getSynonymList() {
+		return synonymList;
 	}
 	
-	public Map<String, List<String>> getCompoundDictionary() {
+	public void setSynonymList(List<String> synonymList) {
+		this.synonymList = synonymList;
+	}
+	
+	public Map<String, List<String>> getCompoundDictionaryMap() {
 		return compoundDictionaryMap;
 	}
-	
-	public Map<String, String> getCustomNounDictionary() {
+
+	public void setCompoundDictionaryMap(
+			Map<String, List<String>> compoundDictionaryMap) {
+		this.compoundDictionaryMap = compoundDictionaryMap;
+	}
+
+	public Map<String, String> getCustomNounDictionaryMap() {
 		return customNounDictionaryMap;
 	}
-	
-	public Map<String, String> getStopWordsDictionary() {
-		return stopDictionaryMap;
+
+	public void setCustomNounDictionaryMap(
+			Map<String, String> customNounDictionaryMap) {
+		this.customNounDictionaryMap = customNounDictionaryMap;
+	}
+
+	public Map<String, String> getStopWordDictionaryMap() {
+		return stopWordDictionaryMap;
+	}
+
+	public void setStopWordDictionaryMap(Map<String, String> stopWordDictionaryMap) {
+		this.stopWordDictionaryMap = stopWordDictionaryMap;
 	}
 	
-	private List<String> loadDictionary(DictionaryType name) {
-
-		BufferedReader in = null;
-		String dictionaryFile = DictionaryProperties.getInstance().getProperty(name.getPropertiesKey());
-		InputStream inputStream = DictionaryFactory.class.getClassLoader().getResourceAsStream(dictionaryFile);
-
-		if(inputStream == null) {
-			logger.info("couldn't find dictionary : " + dictionaryFile);
-			
-			inputStream = DictionaryFactory.class.getResourceAsStream(dictionaryFile);
-			
-			logger.info(dictionaryFile + " file loaded.. from classloader.");
-		}
-
-		List<String> words = new ArrayList<String>();
-
-		try {
-			String readWord = "";
-			in = new BufferedReader( new InputStreamReader(inputStream ,"utf-8"));
-			
-			
-			while( (readWord = in.readLine()) != null ) {
-				words.add(readWord.trim());
-			}
-
-			if(logger.isInfoEnabled()) {
-				logger.info(name.getDescription() + " : " + words.size());
-			}
-
-			if(logger.isInfoEnabled()) {
-				logger.info("create wordset from file complete");
-			}
-
-		}catch(IOException e){
-			logger.error(e.toString());
-		}finally{
-			try {
-				in.close();
-			} catch (IOException e) {
-				logger.error(e.toString());
-			}
-		}
+	class DictionaryLoader {
 		
-		return words;
-	}
-	
-	public void rebuildDictionary(DictionaryType dictionaryType) {
+		private Map<DictionaryType, List<String>> dictionaryMap = new HashMap<DictionaryType, List<String>>();
 		
-		if(DictionaryType.CUSTOM == dictionaryType) {
+		public void loadDictionaries() {
+			DictionaryType[] dictionaryTypes = DictionaryType.values();
+			
+			for(DictionaryType dictionaryType : dictionaryTypes) {
+				if(logger.isInfoEnabled()) {
+					logger.info("["+dictionaryType.getDescription()+"] "+"create wordset from file");
+				}
+				
+				List<String> dictionary = loadDictionary(dictionaryType);
+				dictionaryMap.put(dictionaryType, dictionary);
+			}
+			
+			List<String> dictionaryData = dictionaryMap.get(DictionaryType.COMPOUND);
+			String[] extractKey = null;
+			String key = null;
+			String[] nouns = null;
+			
+			for(String data : dictionaryData) {
+				extractKey = data.split(":");
+				key = extractKey[0];
+				nouns = extractKey[1].split(",");
+				
+				compoundDictionaryMap.put(key, Arrays.asList(nouns));
+			}
+			
 			List<String> customNouns = dictionaryMap.get(DictionaryType.CUSTOM);
-			customNounDictionaryMap.clear();
 			for(String noun : customNouns) {
 				customNounDictionaryMap.put(noun, null);
 			}
 			
-			return;
-		}
-		
-		if(DictionaryType.COMPOUND == dictionaryType) {
-			List<String> customNouns = dictionaryMap.get(DictionaryType.CUSTOM);
-			customNounDictionaryMap.clear();
-			for(String noun : customNouns) {
-				customNounDictionaryMap.put(noun, null);
-			}
-		}
-		
-		if(DictionaryType.STOP == dictionaryType) {
+			synonymList = dictionaryMap.get(DictionaryType.SYNONYM);
+						
 			List<String> stopWords = dictionaryMap.get(DictionaryType.STOP);
-			stopDictionaryMap.clear();
 			for(String stopWord : stopWords) {
-				stopDictionaryMap.put(stopWord, null);
+				stopWordDictionaryMap.put(stopWord, null);
 			}
 		}
 		
-		if(DictionaryType.SYNONYM == dictionaryType) {
-			List<String> synonymWords = dictionaryMap.get(DictionaryType.SYNONYM);
-			SynonymDictionaryIndex indexModule = SynonymDictionaryIndex.getIndexingModule();
-			indexModule.indexingDictionary(synonymWords);
+		private List<String> loadDictionary(DictionaryType name) {
+
+			BufferedReader in = null;
+			String dictionaryFile = DictionaryProperties.getInstance().getProperty(name.getPropertiesKey());
+			InputStream inputStream = DictionaryFactory.class.getClassLoader().getResourceAsStream(dictionaryFile);
+
+			if(inputStream == null) {
+				logger.info("couldn't find dictionary : " + dictionaryFile);
+				
+				inputStream = DictionaryFactory.class.getResourceAsStream(dictionaryFile);
+				
+				logger.info(dictionaryFile + " file loaded.. from classloader.");
+			}
+
+			List<String> words = new ArrayList<String>();
+
+			try {
+				String readWord = "";
+				in = new BufferedReader( new InputStreamReader(inputStream ,"utf-8"));
+				
+				
+				while( (readWord = in.readLine()) != null ) {
+					words.add(readWord.trim());
+				}
+
+				if(logger.isInfoEnabled()) {
+					logger.info(name.getDescription() + " : " + words.size());
+				}
+
+				if(logger.isInfoEnabled()) {
+					logger.info("create wordset from file complete");
+				}
+
+			}catch(IOException e){
+				logger.error(e.toString());
+			}finally{
+				try {
+					in.close();
+				} catch (IOException e) {
+					logger.error(e.toString());
+				}
+			}
+			
+			return words;
 		}
 	}
 }

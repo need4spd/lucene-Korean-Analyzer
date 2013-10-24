@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.tistory.devyongsik.analyzer.dictionary.DictionaryFactory;
-import com.tistory.devyongsik.analyzer.dictionary.DictionaryType;
 import com.tistory.devyongsik.analyzer.dictionaryindex.SynonymDictionaryIndex;
 
 public class KoreanSynonymEngine implements Engine {
@@ -32,7 +31,7 @@ public class KoreanSynonymEngine implements Engine {
 
 	static {
 		DictionaryFactory dictionaryFactory = DictionaryFactory.getFactory();
-		createSynonymIndex(dictionaryFactory.get(DictionaryType.SYNONYM));
+		createSynonymIndex(dictionaryFactory.getSynonymList());
 	}
 	
 	private static void createSynonymIndex(List<String> synonyms) {

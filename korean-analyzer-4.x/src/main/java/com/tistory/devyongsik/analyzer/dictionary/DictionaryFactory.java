@@ -42,6 +42,10 @@ public class DictionaryFactory {
 		return synonymList;
 	}
 	
+	public void setSynonymList(List<String> synonymList) {
+		this.synonymList = synonymList;
+	}
+	
 	public Map<String, List<String>> getCompoundDictionaryMap() {
 		return compoundDictionaryMap;
 	}

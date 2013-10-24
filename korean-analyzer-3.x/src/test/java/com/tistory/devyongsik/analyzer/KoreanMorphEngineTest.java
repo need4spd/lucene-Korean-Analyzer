@@ -1,18 +1,13 @@
 package com.tistory.devyongsik.analyzer;
 
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.Lists;
 import com.tistory.devyongsik.analyzer.util.AnalyzerTestUtil;
 import com.tistory.devyongsik.analyzer.util.TestToken;
 
@@ -21,13 +16,14 @@ import com.tistory.devyongsik.analyzer.util.TestToken;
  *
  */
 public class KoreanMorphEngineTest extends AnalyzerTestUtil {
-	private Set<TestToken> nouns = null;
+	private List<TestToken> nouns = null;
 	
-	private List<Engine> engines = new ArrayList<Engine>();
+	private List<Engine> engines = null;
 
 	@Before
 	public void initDictionary() {
-		nouns = new HashSet<TestToken>();
+		nouns = Lists.newArrayList();
+		engines = Lists.newArrayList();
 		
 		engines.add(new KoreanMorphEngine());
 	}
@@ -44,19 +40,11 @@ public class KoreanMorphEngineTest extends AnalyzerTestUtil {
 		TokenStream stream = new KoreanNounFilter(new KoreanCharacterTokenizer(reader), engines);
 		stream.reset();
 		
-		CharTermAttribute charTermAtt = stream.getAttribute(CharTermAttribute.class);
-		OffsetAttribute offSetAtt = stream.getAttribute(OffsetAttribute.class);
+		List<TestToken> extractedTokens = collectExtractedNouns(stream);
 
-		while(stream.incrementToken()) {
-			TestToken t = getToken(charTermAtt.toString(), offSetAtt.startOffset(), offSetAtt.endOffset());
-			System.out.println("termAtt.term() : " + charTermAtt.toString());
-			System.out.println("offSetAtt : " + offSetAtt.startOffset());
-			System.out.println("offSetAtt : " + offSetAtt.endOffset());
-
-			Assert.assertTrue(nouns.contains(t));
-		}
-		
 		stream.close();
+
+		verify(nouns, extractedTokens);
 	}
 	
 	@Test
@@ -68,18 +56,10 @@ public class KoreanMorphEngineTest extends AnalyzerTestUtil {
 		TokenStream stream = new KoreanNounFilter(new KoreanCharacterTokenizer(reader), engines);
 		stream.reset();
 		
-		CharTermAttribute charTermAtt = stream.getAttribute(CharTermAttribute.class);
-		OffsetAttribute offSetAtt = stream.getAttribute(OffsetAttribute.class);
+		List<TestToken> extractedTokens = collectExtractedNouns(stream);
 
-		while(stream.incrementToken()) {
-			TestToken t = getToken(charTermAtt.toString(), offSetAtt.startOffset(), offSetAtt.endOffset());
-			System.out.println("termAtt.term() : " + charTermAtt.toString());
-			System.out.println("offSetAtt : " + offSetAtt.startOffset());
-			System.out.println("offSetAtt : " + offSetAtt.endOffset());
-
-			Assert.assertTrue(nouns.contains(t));
-		}
-		
 		stream.close();
+
+		verify(nouns, extractedTokens);
 	}
 }
