@@ -1,27 +1,23 @@
 package com.tistory.devyongsik.analyzer;
 
 import java.io.StringReader;
-import java.util.HashSet;
-import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.Lists;
 import com.tistory.devyongsik.analyzer.util.AnalyzerTestUtil;
 import com.tistory.devyongsik.analyzer.util.TestToken;
 
 public class AnalyzerTest extends AnalyzerTestUtil {
-	private Set<TestToken> nouns = null;
+	private List<TestToken> nouns = null;
 
 	@Before
 	public void initDictionary() {
-		nouns = new HashSet<TestToken>();
+		nouns = Lists.newArrayList();
 	}
 
 	@Test
@@ -38,19 +34,11 @@ public class AnalyzerTest extends AnalyzerTestUtil {
 		TokenStream stream = analyzer.tokenStream("dummy", reader);
 		stream.reset();
 		
-		CharTermAttribute charTermAtt = stream.getAttribute(CharTermAttribute.class);
-		OffsetAttribute offSetAtt = stream.getAttribute(OffsetAttribute.class);
+		List<TestToken> extractedTokens = collectExtractedNouns(stream);
 
-		while(stream.incrementToken()) {
-			TestToken t = getToken(charTermAtt.toString(), offSetAtt.startOffset(), offSetAtt.endOffset());
-			System.out.println("termAtt.term() : " + charTermAtt.toString());
-			System.out.println("offSetAtt : " + offSetAtt.startOffset());
-			System.out.println("offSetAtt : " + offSetAtt.endOffset());
-
-			Assert.assertTrue(nouns.contains(t));
-		}
-		
 		analyzer.close();
+
+		verify(nouns, extractedTokens);
 	}
 	
 	@Test
@@ -67,19 +55,11 @@ public class AnalyzerTest extends AnalyzerTestUtil {
 		TokenStream stream = analyzer.tokenStream("dummy", reader);
 		stream.reset();
 		
-		CharTermAttribute charTermAtt = stream.getAttribute(CharTermAttribute.class);
-		OffsetAttribute offSetAtt = stream.getAttribute(OffsetAttribute.class);
+		List<TestToken> extractedTokens = collectExtractedNouns(stream);
 
-		while(stream.incrementToken()) {
-			TestToken t = getToken(charTermAtt.toString(), offSetAtt.startOffset(), offSetAtt.endOffset());
-			System.out.println("termAtt.term() : " + charTermAtt.toString());
-			System.out.println("offSetAtt : " + offSetAtt.startOffset());
-			System.out.println("offSetAtt : " + offSetAtt.endOffset());
-
-			Assert.assertTrue(nouns.contains(t));
-		}
-		
 		analyzer.close();
+
+		verify(nouns, extractedTokens);
 	}
 	
 	@Test
@@ -95,19 +75,11 @@ public class AnalyzerTest extends AnalyzerTestUtil {
 		Analyzer analyzer = new KoreanAnalyzer(true);
 		TokenStream stream = analyzer.tokenStream("dummy", reader);
 		stream.reset();
-		
-		CharTermAttribute charTermAtt = stream.getAttribute(CharTermAttribute.class);
-		OffsetAttribute offSetAtt = stream.getAttribute(OffsetAttribute.class);
 
-		while(stream.incrementToken()) {
-			TestToken t = getToken(charTermAtt.toString(), offSetAtt.startOffset(), offSetAtt.endOffset());
-			System.out.println("termAtt.term() : " + charTermAtt.toString());
-			System.out.println("offSetAtt : " + offSetAtt.startOffset());
-			System.out.println("offSetAtt : " + offSetAtt.endOffset());
+		List<TestToken> extractedTokens = collectExtractedNouns(stream);
 
-			//Assert.assertTrue(nouns.contains(t));
-		}
-		
 		analyzer.close();
+
+		verify(nouns, extractedTokens);
 	}
 }
