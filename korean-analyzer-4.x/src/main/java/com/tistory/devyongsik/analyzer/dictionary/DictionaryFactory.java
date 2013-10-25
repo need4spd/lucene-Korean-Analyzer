@@ -25,6 +25,8 @@ public class DictionaryFactory {
 	private Map<String, String> stopWordDictionaryMap = new HashMap<String, String>();
 	private List<String> synonymList = new ArrayList<String>();
 	
+	private Map<DictionaryType, List<String>> dictionaryMap = new HashMap<DictionaryType, List<String>>();
+	
 	public static DictionaryFactory getFactory() {
 		return factory;
 	}
@@ -36,6 +38,10 @@ public class DictionaryFactory {
 	private void initDictionary() {
 		DictionaryLoader dictionaryLoader = new DictionaryLoader();
 		dictionaryLoader.loadDictionaries();
+	}
+	
+	public List<String> get(DictionaryType dictionaryType) {
+		return dictionaryMap.get(dictionaryType);
 	}
 	
 	public List<String> getSynonymList() {
@@ -73,8 +79,6 @@ public class DictionaryFactory {
 	}
 	
 	class DictionaryLoader {
-		
-		private Map<DictionaryType, List<String>> dictionaryMap = new HashMap<DictionaryType, List<String>>();
 		
 		public void loadDictionaries() {
 			DictionaryType[] dictionaryTypes = DictionaryType.values();
