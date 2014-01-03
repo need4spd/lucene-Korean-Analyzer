@@ -237,6 +237,7 @@ public class KoreanCharacterTokenizer extends Tokenizer {
 
 	@Override
 	public void reset() throws IOException {
+	        super.reset();
 		bufferIndex = 0;
 		offset = 0;
 		dataLen = 0;
