@@ -166,7 +166,7 @@ public class KoreanCharacterTokenizer extends Tokenizer {
 			}
 			
 			// use CharacterUtils here to support < 3.1 UTF-16 code unit behavior if the char based methods are gone
-			final int c = charUtils.codePointAt(ioBuffer.getBuffer(), bufferIndex, 1024);
+			final int c = charUtils.codePointAt(ioBuffer.getBuffer(), bufferIndex, ioBuffer.getBuffer().length);
 			final int charCount = Character.charCount(c);
 			bufferIndex += charCount;
 
